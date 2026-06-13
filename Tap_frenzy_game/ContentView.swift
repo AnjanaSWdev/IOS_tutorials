@@ -10,7 +10,7 @@ internal import Combine
 
 struct ContentView: View {
     
-    @State var countDownTimer = 30
+    @State var countDownTimer = 10
     @State var timerRunning = false
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -21,8 +21,9 @@ struct ContentView: View {
     private func resetGame() {
         
             showGameOver = false
-            countDownTimer = 30
+            countDownTimer = 10
             score = 0
+            
             
         }
     
@@ -42,6 +43,10 @@ struct ContentView: View {
             Button(action: {
                 if(countDownTimer > 0 && timerRunning == true){
                     score += 1
+            
+                }
+                else{
+                    timerRunning = true
                 }
                 
             }) {
@@ -59,23 +64,23 @@ struct ContentView: View {
             .padding(60)
             
             
-            Button(action: {
-                if(countDownTimer == 0){
-                    countDownTimer = 30
-                    timerRunning = true
-                }else{
-                    timerRunning = true
-                }
-                
-            }) {
-                Text("Start")
-                    .bold()
-                    .font(.system(size: 22))
-                    .foregroundColor(.white)
-                    .frame(width: 250, height: 60)
-                    .background(Color.red)
-                    .clipShape(Rectangle())
-            }
+//            Button(action: {
+////                if(countDownTimer == 0){
+////                    countDownTimer = 30
+////                    timerRunning = true
+////                }else{
+////                    timerRunning = true
+////                }
+//                
+//            }) {
+//                Text("Start")
+//                    .bold()
+//                    .font(.system(size: 22))
+//                    .foregroundColor(.white)
+//                    .frame(width: 250, height: 60)
+//                    .background(Color.red)
+//                    .clipShape(Rectangle())
+//            }
             Spacer()
             
             
