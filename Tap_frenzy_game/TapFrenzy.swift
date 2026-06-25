@@ -26,6 +26,12 @@ struct ContentView: View {
             
             
         }
+    private func checkHighScore()
+    {
+        if score > ScoreManager.shared.tapFrenzyHighScore{
+            ScoreManager.shared.tapFrenzyHighScore = score
+        }
+    }
     
     var body: some View {
         VStack {
@@ -64,23 +70,6 @@ struct ContentView: View {
             .padding(60)
             
             
-//            Button(action: {
-////                if(countDownTimer == 0){
-////                    countDownTimer = 30
-////                    timerRunning = true
-////                }else{
-////                    timerRunning = true
-////                }
-//                
-//            }) {
-//                Text("Start")
-//                    .bold()
-//                    .font(.system(size: 22))
-//                    .foregroundColor(.white)
-//                    .frame(width: 250, height: 60)
-//                    .background(Color.red)
-//                    .clipShape(Rectangle())
-//            }
             Spacer()
             
             
@@ -91,6 +80,7 @@ struct ContentView: View {
                     }else if countDownTimer == 0{
                         timerRunning = false
                         showGameOver = true
+                        checkHighScore()
                     }
                 }
                 .font(.system(size: 45))
