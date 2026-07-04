@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  TapFrenzy.swift
 //  Tap_frenzy_game
 //
 //  Created by TEST on 2026-06-10.
@@ -8,7 +8,7 @@
 import SwiftUI
 internal import Combine
 
-struct ContentView: View {
+struct TapFrenzy: View {
     
     @State var countDownTimer = 10
     @State var timerRunning = false
@@ -26,12 +26,12 @@ struct ContentView: View {
             
             
         }
-    private func checkHighScore()
-    {
-        if score > ScoreManager.shared.tapFrenzyHighScore{
-            ScoreManager.shared.tapFrenzyHighScore = score
-        }
-    }
+//    private func checkHighScore()
+//    {
+//        if score > ScoreManager.shared.tapFrenzyHighScore{
+//            ScoreManager.shared.tapFrenzyHighScore = score
+//        }
+//    }
     
     var body: some View {
         VStack {
@@ -80,7 +80,7 @@ struct ContentView: View {
                     }else if countDownTimer == 0{
                         timerRunning = false
                         showGameOver = true
-                        checkHighScore()
+                        //checkHighScore()
                     }
                 }
                 .font(.system(size: 45))
@@ -106,5 +106,5 @@ struct ContentView: View {
 
 
 #Preview {
-    ContentView()
+    TapFrenzy()
 }
