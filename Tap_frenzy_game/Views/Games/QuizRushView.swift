@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct QuizRushView: View {
-    @StateObject private var viewModel = QuizRushViewModel()
+    @StateObject private var viewModel = QuizRushVM()
 
     var body: some View {
         ZStack {
@@ -17,7 +17,7 @@ struct QuizRushView: View {
     }
 
     @ViewBuilder
-    private var content: some View {
+    private var content: some View { 
         switch viewModel.state {
         case .idle, .loading:
             loadingView

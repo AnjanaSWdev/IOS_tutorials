@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 final class ScoreManager: ObservableObject {
+    
     static let shared = ScoreManager()
 
     // UserDefaults keys
@@ -37,4 +38,18 @@ final class ScoreManager: ObservableObject {
         quizRushHighScore = score
         UserDefaults.standard.set(score, forKey: Self.quizRushKey)
     }
+    
+    func resetAllScores() {
+        // 1. Reset the live publishing variables so the UI updates instantly
+        self.tapFrenzyHighScore = 0  // Change these variable names if yours are named slightly differently
+        self.quizRushHighScore = 0
+        self.lightItUpHighScore = 0
+        
+        // 2. Clear the persistent keys from memory
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "tap_frenzy_high_score")
+        defaults.removeObject(forKey: "quiz_rush_high_score")
+        defaults.removeObject(forKey: "light_it_up_high_score")
+    }
+    
 }

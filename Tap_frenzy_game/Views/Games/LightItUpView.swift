@@ -1,88 +1,47 @@
 //
-//  LightItUp.swift
+//  File.swift
 //  Tap_frenzy_game
 //
-//  Created by student2 on 2026-07-05.
+//  Created by student2 on 2026-07-07.
 //
 
 import Foundation
 import SwiftUI
 
-// MARK: - Level Configuration Model
-struct LevelConfig {
-    let name: String
-    let cardCount: Int
-    let litWindow: Double
-    let color: Color
-    let columnsCount: Int
-    let concurrentLit: Int
-}
-
-struct LightItUp: View {
-    // MARK: - Game States
-    @State private var score: Int = 0
-    @State private var timeElapsed: Int = 0
-    @State private var lives: Int = 3
-    @State private var activeCardIndices: Set<Int> = []
-    @State private var isGameActive: Bool = false
-    @State private var showGameOverModal: Bool = false
-
-    @AppStorage("lightItUpHighScore") private var highScore: Int = 0
+struct LightItUpView: View {
     
-    // MARK: - Timers
-    @State private var gameTimer: Timer? = nil
-    @State private var glowTimer: Timer? = nil
-    
-    // MARK: - Dynamic Level Resolution
-    private var currentLevel: LevelConfig {
-        if timeElapsed < 15 {
-            return LevelConfig(name: "L1", cardCount: 3, litWindow: 1.5, color: .green, columnsCount: 3, concurrentLit: 1)
-        } else if timeElapsed < 30 {
-            return LevelConfig(name: "L2", cardCount: 4, litWindow: 1.2, color: .blue, columnsCount: 3, concurrentLit: 1)
-        } else if timeElapsed < 45 {
-            return LevelConfig(name: "L3", cardCount: 6, litWindow: 1.0, color: .yellow, columnsCount: 3, concurrentLit: 1)
-        } else {
-            return LevelConfig(name: "L4", cardCount: 9, litWindow: 0.8, color: .orange, columnsCount: 3, concurrentLit: 2)
-        }
-    }
-    
-    private var columns: [GridItem] {
-        Array(repeating: GridItem(.flexible(), spacing: 12), count: currentLevel.columnsCount)
-    }
+    @State private var viewModel = LightItUpVM()
     
     var body: some View {
         ZStack {
-            // Dark Background
             Color(red: 0.08, green: 0.11, blue: 0.15)
                 .ignoresSafeArea()
             
-            // MARK: - Main Game Layer
-            // This entire vertical layout completely vanishes when the pop-up shows
-            if !showGameOverModal {
+            // Main Game Layer
+            if !viewModel.showGameOverModal {
                 VStack(spacing: 20) {
-                    // Top Header (Only visible while playing)
+                    
+                    // Top Header
                     HStack(alignment: .top) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("SCORE")
                                 .font(.caption).foregroundColor(.gray)
-                            Text("\(score)")
+                            Text("\(viewModel.score)")
                                 .font(.largeTitle).bold().foregroundColor(.white)
-                            Text("BEST \(highScore)")
-                                .font(.caption2).foregroundColor(.gray)
                         }
                         
                         Spacer()
                         
-                        if isGameActive {
+                        if viewModel.isGameActive {
                             VStack(spacing: 4) {
                                 Text("LEVEL")
                                     .font(.caption).foregroundColor(.gray)
-                                Text(currentLevel.name)
+                                Text(viewModel.currentLevel.name)
                                     .font(.headline).bold()
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 4)
-                                    .background(currentLevel.color.opacity(0.8))
+                                    .background(viewModel.currentLevel.color.opacity(0.8))
                                     .cornerRadius(8)
                             }
                         }
@@ -92,7 +51,7 @@ struct LightItUp: View {
                         VStack(alignment: .trailing, spacing: 4) {
                             Text("TIME")
                                 .font(.caption).foregroundColor(.gray)
-                            Text("\(60 - timeElapsed)s")
+                            Text("\(60 - viewModel.timeElapsed)s")
                                 .font(.largeTitle).bold().foregroundColor(.white)
                         }
                     }
@@ -100,28 +59,28 @@ struct LightItUp: View {
                     .padding(.top, 16)
                     
                     // Lives Display
-                    if isGameActive {
+                    if viewModel.isGameActive {
                         HStack(spacing: 6) {
                             ForEach(0..<3) { index in
-                                Image(systemName: index < lives ? "heart.fill" : "heart")
+                                Image(systemName: index < viewModel.lives ? "heart.fill" : "heart")
                                     .font(.title3)
-                                    .foregroundColor(index < lives ? .red : .gray.opacity(0.3))
+                                    .foregroundColor(index < viewModel.lives ? .red : .gray.opacity(0.3))
                             }
                         }
                     }
                     
                     Spacer()
                     
-                    // Game View Grid / Start Screen Switcher
-                    if isGameActive {
+                    // Game View Grid
+                    if viewModel.isGameActive {
                         ScrollView {
-                            LazyVGrid(columns: columns, spacing: 12) {
-                                ForEach(0..<currentLevel.cardCount, id: \.self) { index in
+                            LazyVGrid(columns: viewModel.columns, spacing: 12) {
+                                ForEach(0..<viewModel.currentLevel.cardCount, id: \.self) { index in
                                     CardView(
-                                        isGlowing: activeCardIndices.contains(index),
-                                        glowColor: currentLevel.color
+                                        isGlowing: viewModel.activeCardIndices.contains(index),
+                                        glowColor: viewModel.currentLevel.color
                                     ) {
-                                        handleCardTap(at: index)
+                                        viewModel.handleCardTap(at: index)
                                     }
                                 }
                             }
@@ -140,7 +99,7 @@ struct LightItUp: View {
                             Text("Light It Up")
                                 .font(.largeTitle).bold().foregroundColor(.white)
                             
-                            Button(action: startGame) {
+                            Button(action: viewModel.startGame) {
                                 Text("Start Game")
                                     .font(.headline).foregroundColor(.white)
                                     .padding().frame(width: 200)
@@ -153,15 +112,15 @@ struct LightItUp: View {
                 .transition(.opacity)
             }
             
-            // MARK: - Game Over Centered Pop-up Window
-            if showGameOverModal {
+            // Game Over PopUp Window
+            if viewModel.showGameOverModal {
                 VStack(spacing: 24) {
-                    Text(lives == 0 ? "GAME OVER" : "VICTORY!")
+                    Text(viewModel.lives == 0 ? "GAME OVER" : "VICTORY!")
                         .font(.title).bold()
-                        .foregroundColor(lives == 0 ? .red : .green)
+                        .foregroundColor(viewModel.lives == 0 ? .red : .green)
                         .tracking(2)
                     
-                    Text(lives == 0 ? "You ran out of lives." : "You survived the whole 60 seconds!")
+                    Text(viewModel.lives == 0 ? "You ran out of lives." : "You survived the whole 60 seconds!")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
@@ -171,7 +130,7 @@ struct LightItUp: View {
                         Text("FINAL SCORE")
                             .font(.caption2)
                             .foregroundColor(.gray)
-                        Text("\(score)")
+                        Text("\(viewModel.score)")
                             .font(.system(size: 54, weight: .heavy, design: .rounded))
                             .foregroundColor(.white)
                     }
@@ -183,9 +142,9 @@ struct LightItUp: View {
                     // Action Button
                     Button(action: {
                         withAnimation {
-                            showGameOverModal = false
+                            viewModel.showGameOverModal = false
                         }
-                        startGame()
+                        viewModel.startGame()
                     }) {
                         Text("Play Again")
                             .font(.headline)
@@ -206,81 +165,11 @@ struct LightItUp: View {
                 .transition(.scale.combined(with: .opacity))
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showGameOverModal)
-    }
-    
-    // MARK: - Game Operations
-    func startGame() {
-        score = 0
-        timeElapsed = 0
-        lives = 3
-        showGameOverModal = false
-        isGameActive = true
-        
-        gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if timeElapsed < 60 {
-                timeElapsed += 1
-            } else {
-                endGame(dueToLives: false)
-            }
-        }
-        
-        triggerNextGlow()
-    }
-    
-    func triggerNextGlow() {
-        glowTimer?.invalidate()
-        activeCardIndices.removeAll()
-        
-        let config = currentLevel
-        var generatedIndices = Set<Int>()
-        
-        let countToLit = min(config.concurrentLit, config.cardCount)
-        while generatedIndices.count < countToLit {
-            let randomIndex = Int.random(in: 0..<config.cardCount)
-            generatedIndices.insert(randomIndex)
-        }
-        
-        activeCardIndices = generatedIndices
-        
-        glowTimer = Timer.scheduledTimer(withTimeInterval: config.litWindow, repeats: false) { _ in
-            activeCardIndices.removeAll()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                if isGameActive { triggerNextGlow() }
-            }
-        }
-    }
-    
-    func handleCardTap(at index: Int) {
-        if activeCardIndices.contains(index) {
-            score += 1
-            activeCardIndices.remove(index)
-            
-            if activeCardIndices.isEmpty {
-                triggerNextGlow()
-            }
-        } else {
-            if lives > 0 { lives -= 1 }
-            if lives == 0 { endGame(dueToLives: true) }
-        }
-    }
-    
-    func endGame(dueToLives: Bool) {
-        isGameActive = false
-        gameTimer?.invalidate()
-        glowTimer?.invalidate()
-        activeCardIndices.removeAll()
-        if !dueToLives {
-            if score > highScore { highScore = score }
-            ScoreManager.shared.updateLightItUpHighScore(with: highScore)
-        }
-        withAnimation {
-            showGameOverModal = true
-        }
+        .animation(.spring(response: 0.4, dampingFraction: 0.75), value: viewModel.showGameOverModal)
     }
 }
 
-// MARK: - Card Component
+// Card Component (Kept private or internal to the view file)
 struct CardView: View {
     let isGlowing: Bool
     let glowColor: Color
@@ -303,6 +192,5 @@ struct StaticButtonStyle: ButtonStyle {
 }
 
 #Preview {
-    LightItUp()
+    LightItUpView()
 }
-

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct HighScoresView: View {
+    
     @ObservedObject private var scoreManager = ScoreManager.shared
 
     var body: some View {

@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct Tap_frenzy_gameApp: App {
+struct PlayHubApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            TabShell()
         }
     }
 }

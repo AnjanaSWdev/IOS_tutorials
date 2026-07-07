@@ -3,7 +3,7 @@ import Combine
 import SwiftUI
 
 @MainActor
-final class QuizRushViewModel: ObservableObject {
+final class QuizRushVM: ObservableObject {
     enum State: Equatable {
         case idle
         case loading
@@ -58,8 +58,10 @@ final class QuizRushViewModel: ObservableObject {
     }
 
     var currentQuestion: TriviaQuestion? {
-        guard questions.indices.contains(currentIndex) else { return nil }
-        return questions[currentIndex]
+        get {
+            guard questions.indices.contains(currentIndex) else { return nil }
+            return questions[currentIndex]
+        }
     }
 
     var progressText: String {
@@ -99,8 +101,13 @@ final class QuizRushViewModel: ObservableObject {
         currentIndex += 1
         if currentIndex >= questionCount {
             state = .finished
+            
             // Update high score
             ScoreManager.shared.updateQuizRushHighScore(with: score)
+            
+            // Appends the finished game stats directly into our permanent history storage
+            GameSessionManager.shared.recordSession(mode: .quizRush, score: score)
+            
         } else {
             state = .loaded
         }
