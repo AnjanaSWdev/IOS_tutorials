@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+internal import _LocationEssentials
 
 struct LevelConfig {
     let name: String
@@ -122,10 +123,20 @@ class LightItUpVM {
         
         if !dueToLives {
             if score > highScore { highScore = score }
-            // Note: Ensure ScoreManager is available in your project scope
+            
             ScoreManager.shared.updateLightItUpHighScore(with: highScore)
             
-            GameSessionManager.shared.recordSession(mode: .lightItUp, score: score)
+            let currentLat = LocationService.shared.currentLocation?.coordinate.latitude ?? 6.9114
+            let currentLng = LocationService.shared.currentLocation?.coordinate.longitude ?? 79.8647
+                
+                // Record session with location
+                GameSessionManager.shared.recordSession(
+                    mode: .lightItUp,
+                    score: score,
+                    latitude: currentLat,
+                    longitude: currentLng
+                )
+            
         }
         
         withAnimation {

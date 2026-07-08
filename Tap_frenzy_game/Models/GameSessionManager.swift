@@ -6,21 +6,25 @@
 //
 
 import Foundation
-import SwiftUI
+import Observation
 
 @Observable
 class GameSessionManager {
     static let shared = GameSessionManager()
     
+    // The master list holding every single played game session
     var sessions: [GameSession] = []
-    private let storageKey = "saved_game_sessions"
+    
+    private let cacheKey = "game_sessions_key"
     
     private init() {
         loadSessions()
     }
     
-    /// Appends a newly completed game session and updates persistent storage.
-    func recordSession(mode: GameMode, score: Int, latitude: Double = 0.0, longitude: Double = 0.0) {
+    // Records a new game session and appends it to history
+    func recordSession(mode: GameMode, score: Int, latitude: Double, longitude: Double) {
+        
+        // Create a completely brand new session with a unique ID every single time
         let newSession = GameSession(
             id: UUID(),
             mode: mode,
@@ -29,36 +33,39 @@ class GameSessionManager {
             latitude: latitude,
             longitude: longitude
         )
-        sessions.append(newSession)
-        saveSessions()
         
-        DailyChallengeManager.shared.verifyAndCompleteChallenge(mode: mode)
+        // Append to the array so old matches are NEVER deleted ---
+        self.sessions.append(newSession)
+        
+        // Persist the entire updated history array to the phone
+        saveSessions()
     }
     
+    // Saves the full array to local storage as encoded JSON data
     private func saveSessions() {
         do {
             let data = try JSONEncoder().encode(sessions)
-            UserDefaults.standard.set(data, forKey: storageKey)
+            UserDefaults.standard.set(data, forKey: cacheKey)
         } catch {
             print("Failed to encode game sessions: \(error.localizedDescription)")
         }
     }
     
+    // Loads the full history back into memory when the app opens up
     func loadSessions() {
-        guard let data = UserDefaults.standard.data(forKey: storageKey) else { return }
-        do {
-            self.sessions = try JSONDecoder().decode([GameSession].self, from: data)
-        } catch {
-            print("Failed to decode game sessions: \(error.localizedDescription)")
+        if let data = UserDefaults.standard.data(forKey: cacheKey) {
+            do {
+                let decoded = try JSONDecoder().decode([GameSession].self, from: data)
+                self.sessions = decoded
+            } catch {
+                print("Failed to decode game sessions: \(error.localizedDescription)")
+            }
         }
     }
     
+    // Clears everything out cleanly when hitting Reset in Settings
     func clearAllSessions() {
-        self.sessions = [] // If your array is named 'allSessions' or something else, match it here
-            
-            // 2. Erase the persistent file data from storage
-            UserDefaults.standard.removeObject(forKey: "game_sessions_key")
-            UserDefaults.standard.removeObject(forKey: "sessions")
+        self.sessions = []
+        UserDefaults.standard.removeObject(forKey: cacheKey)
     }
-    
 }

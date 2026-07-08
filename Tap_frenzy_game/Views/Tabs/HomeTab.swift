@@ -6,7 +6,7 @@ import SwiftUI
 struct HomeTab: View {
     @StateObject private var scoreManager = ScoreManager.shared
     
-    // --- SIMPLE PERSISTENT APP STORAGE KEYS ---
+    // SIMPLE PERSISTENT APP STORAGE KEYS
     @AppStorage("daily_challenge_mode") private var dailyChallengeMode = "TapFrenzy"
     @AppStorage("challenge_completed_today") private var isChallengeCompleted = false
 
@@ -48,7 +48,7 @@ struct HomeTab: View {
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 16) {
                             
-                            // --- ADDED: DYNAMIC DAILY CHALLENGE CARD ---
+                            // DYNAMIC DAILY CHALLENGE CARD
                             if isChallengeCompleted {
                                 // Static representation displaying success status
                                 dailyChallengeCardView()
@@ -59,7 +59,7 @@ struct HomeTab: View {
                                 }
                             }
                             
-                            // --- REGULAR GAME MODES (Preserved Exactly) ---
+                            //REGULAR GAME MODES
                             NavigationLink(destination: TapFrenzyView()) {
                                 gameCard(title: "TapFrenzy", icon: "hand.tap", gradient: [Color.blue, Color.cyan])
                             }
@@ -88,7 +88,7 @@ struct HomeTab: View {
 
     // MARK: - Private UI Components
 
-    /// Beautiful Daily Challenge layout card matching your native suite styles
+    //  Beautiful Daily Challenge layout card matching your native suite styles
     private func dailyChallengeCardView() -> some View {
         HStack(spacing: 14) {
             ZStack {
@@ -133,7 +133,7 @@ struct HomeTab: View {
         .shadow(color: isChallengeCompleted ? Color.clear : Color.orange.opacity(0.35), radius: 14, x: 0, y: 10)
     }
 
-    /// Dynamic subview target pointer mapping strings to View instances
+    // Dynamic subview target pointer mapping strings to View instances
     @ViewBuilder
     private var dailyChallengeDestination: some View {
         switch dailyChallengeMode {

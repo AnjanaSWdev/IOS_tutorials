@@ -12,6 +12,7 @@ struct PlayHubApp: App {
     var body: some Scene {
         WindowGroup {
             TabShell()
+            
         }
     }
 }

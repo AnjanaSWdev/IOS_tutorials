@@ -19,7 +19,7 @@ struct StatsTab: View {
             ScrollView {
                 VStack(spacing: 24) {
                     
-                    // --- TOTALS DASHBOARD CARD ---
+                    // Totals Dashboard card
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("TOTAL GAMES")
@@ -42,7 +42,7 @@ struct StatsTab: View {
                         .background(Color(red: 0.12, green: 0.14, blue: 0.18)).cornerRadius(12)
                     }
                     
-                    // --- PERSONAL BESTS SECTION ---
+                    // Personal Bests Section
                     VStack(alignment: .leading, spacing: 12) {
                         Text("PERSONAL BESTS")
                             .font(.caption).bold().foregroundColor(.gray)
@@ -63,7 +63,7 @@ struct StatsTab: View {
                         }
                     }
                     
-                    // --- CHARTS PERFORMANCE GRAPH ---
+                    // Charts Performance graph
                     VStack(alignment: .leading, spacing: 12) {
                         Text("PERFORMANCE HISTORY")
                             .font(.caption).bold().foregroundColor(.gray)
@@ -125,7 +125,7 @@ struct StatsTab: View {
                     .background(Color(red: 0.12, green: 0.14, blue: 0.18))
                     .cornerRadius(16)
                     
-                    // --- RECENT COMPLETED RUNS LIST ---
+                    // Recent completed run list
                     VStack(alignment: .leading, spacing: 12) {
                         Text("RECENT GAMES")
                             .font(.caption).bold().foregroundColor(.gray)

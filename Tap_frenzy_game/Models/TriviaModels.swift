@@ -60,7 +60,7 @@ extension String {
             return output
         }
 
-        // Decode decimal (e.g., &#039;) and hex (e.g., &#x2019;) numeric entities
+   
         result = decodeNumericEntities(result, pattern: #"&#(\d+);"#, radix: 10)
         result = decodeNumericEntities(result, pattern: #"&#x([0-9A-Fa-f]+);"#, radix: 16)
 

@@ -17,7 +17,7 @@ struct SettingsTab: View {
     
     var body: some View {
         List {
-            // --- SECTION 1: NOTIFICATIONS ---
+          
             Section(header: Text("Notifications")) {
                 Toggle("Daily Challenge Reminder", isOn: $isNotificationEnabled)
                     .onChange(of: isNotificationEnabled) { _, enabled in
@@ -33,7 +33,7 @@ struct SettingsTab: View {
                 }
             }
             
-            // --- SECTION 2: RESET STATS (DANGER ZONE) ---
+            
             Section(header: Text("Clear Stats")) {
                 Button(role: .destructive) {
                     showResetConfirmation = true
@@ -58,14 +58,16 @@ struct SettingsTab: View {
         }
     }
     
-    // MARK: - Reset Data Logic
+    // Reset Data Logic
     private func clearAppStats() {
+        
         // 1. Clear high scores inside ScoreManager (updates HomeTab instantly)
         ScoreManager.shared.resetAllScores()
         
         // 2. Clear history sessions if you have a GameSessionManager setup
         // GameSessionManager.shared.clearAllSessions()
         GameSessionManager.shared.clearAllSessions()
+        
         // 3. Clear the daily challenge completion status so they can play it again
         UserDefaults.standard.removeObject(forKey: "challenge_completed_today")
         
@@ -76,7 +78,7 @@ struct SettingsTab: View {
         print("All game statistics have been permanently deleted.")
     }
     
-    // MARK: - Notification Logic
+    // Notification Logic
     private func requestAndSchedule() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
             if granted {

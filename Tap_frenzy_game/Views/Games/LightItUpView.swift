@@ -154,7 +154,21 @@ struct LightItUpView: View {
                             .background(Color.blue)
                             .cornerRadius(12)
                     }
+                    ShareLink(item: "I just scored \(viewModel.score) points in Light It Up! Think you have a better memory?") {
+                            HStack(spacing: 8) {
+                                Image(systemName: "square.and.arrow.up")
+                                Text("Share Score")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.purple)
+                            .cornerRadius(12)
+                        }
                 }
+                
+                
                 .padding(28)
                 .frame(width: 320)
                 .background(

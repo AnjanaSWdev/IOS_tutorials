@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+internal import _LocationEssentials
 
 @MainActor
 final class QuizRushVM: ObservableObject {
@@ -17,7 +18,7 @@ final class QuizRushVM: ObservableObject {
         case wrong
     }
 
-    // MARK: - Published state
+    // Published state
     @Published private(set) var state: State = .idle
     @Published private(set) var questions: [TriviaQuestion] = []
     @Published private(set) var currentIndex: Int = 0
@@ -26,7 +27,7 @@ final class QuizRushVM: ObservableObject {
     @Published private(set) var selectedAnswer: String? = nil
     @Published private(set) var answerResult: AnswerResult? = nil
 
-    // MARK: - Dependencies
+    
     private let service: TriviaService
     private let questionCount: Int
 
@@ -35,7 +36,7 @@ final class QuizRushVM: ObservableObject {
         self.questionCount = questionCount
     }
 
-    // MARK: - Public API
+    // Public API
     func startNewRound() async {
         state = .loading
         score = 0
@@ -105,8 +106,16 @@ final class QuizRushVM: ObservableObject {
             // Update high score
             ScoreManager.shared.updateQuizRushHighScore(with: score)
             
+            let currentLat = LocationService.shared.currentLocation?.coordinate.latitude ?? 6.9114
+            let currentLng = LocationService.shared.currentLocation?.coordinate.longitude ?? 79.8647
+            
             // Appends the finished game stats directly into our permanent history storage
-            GameSessionManager.shared.recordSession(mode: .quizRush, score: score)
+            GameSessionManager.shared.recordSession(
+                        mode: .quizRush,
+                        score: score,
+                        latitude: currentLat,
+                        longitude: currentLng
+                    )
             
         } else {
             state = .loaded

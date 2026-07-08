@@ -36,19 +36,20 @@ class TapFrenzyVM {
                 showGameOver = true
                 checkHighScore()
                 
-                // --- 1. Get current GPS Coordinates ---
-                let currentLat = LocationService.shared.currentLocation?.coordinate.latitude ?? 0.0
-                let currentLng = LocationService.shared.currentLocation?.coordinate.longitude ?? 0.0
+                // Get current GPS Coordinates
                 
-                // --- 2. Record Session with location for Map Tab ---
+                let currentLat = LocationService.shared.currentLocation?.coordinate.latitude ?? 6.9114
+                let currentLng = LocationService.shared.currentLocation?.coordinate.longitude ?? 79.8647
+
                 GameSessionManager.shared.recordSession(
                     mode: .tapFrenzy,
                     score: score,
                     latitude: currentLat,
                     longitude: currentLng
                 )
+
                 
-                // --- 3. Check for daily challenge completion ---
+                // Check for daily challenge completion
                 let currentDailyMode = UserDefaults.standard.string(forKey: "daily_challenge_mode") ?? "TapFrenzy"
                 if currentDailyMode == "TapFrenzy" {
                     UserDefaults.standard.set(true, forKey: "challenge_completed_today")

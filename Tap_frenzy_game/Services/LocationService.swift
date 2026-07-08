@@ -8,6 +8,7 @@
 import Foundation
 import CoreLocation
 
+@Observable // Makes it trackable in real-time by your view models
 class LocationService: NSObject, CLLocationManagerDelegate {
     static let shared = LocationService()
     
@@ -17,12 +18,29 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     private override init() {
         super.init()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        
+        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        
         locationManager.requestWhenInUseAuthorization()
+        
+        
         locationManager.startUpdatingLocation()
     }
     
+    // This delegate fires automatically every time the device updates its location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.currentLocation = locations.last
+        guard let location = locations.last else { return }
+        
+        // Filter out old, cached locations the phone remembered from earlier
+        let age = location.timestamp.timeIntervalSinceNow
+        if abs(age) < 15 { // Only accept locations calculated in the last 15 seconds
+            self.currentLocation = location
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("GPS hardware error: \(error.localizedDescription)")
     }
 }
