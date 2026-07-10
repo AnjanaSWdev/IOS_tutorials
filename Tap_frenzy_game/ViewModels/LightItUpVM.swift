@@ -18,8 +18,10 @@ struct LevelConfig {
     let concurrentLit: Int
 }
 
+
 @Observable
 class LightItUpVM {
+    
     // Game States
     var score: Int = 0
     var timeElapsed: Int = 0
@@ -136,7 +138,10 @@ class LightItUpVM {
                     latitude: currentLat,
                     longitude: currentLng
                 )
-            
+            let currentDailyMode = UserDefaults.standard.string(forKey: "daily_challenge_mode") ?? "TapFrenzy"
+            if currentDailyMode == "LightItUp" {
+                UserDefaults.standard.set(true, forKey: "challenge_completed_today")
+            }
         }
         
         withAnimation {

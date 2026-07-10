@@ -21,6 +21,7 @@ struct TriviaQuestion: Identifiable, Equatable {
 
 extension String {
     var htmlDecoded: String {
+        
         // Fast path: no entities present
         if !self.contains("&") { return self }
 

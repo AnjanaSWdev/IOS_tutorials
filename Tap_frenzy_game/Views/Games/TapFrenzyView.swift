@@ -146,23 +146,6 @@ struct TapFrenzyView: View {
                             .cornerRadius(12)
                         }
                         
-                        // Exit Button
-                        Button(action: {
-                            withAnimation { viewModel.showGameOver = false }
-                            dismiss()
-                        }) {
-                            Text("Exit to Menu")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.white.opacity(0.05))
-                                .cornerRadius(12)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                                )
-                        }
                     }
                 }
                 .padding(28)
@@ -191,6 +174,7 @@ struct ScaledPressButtonStyle: ButtonStyle {
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
+
 
 #Preview {
     TapFrenzyView()

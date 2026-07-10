@@ -83,6 +83,7 @@ struct StatsTab: View {
                                 .frame(maxWidth: .infinity, minHeight: 150)
                                 .multilineTextAlignment(.center)
                         } else {
+                            
                             // Clean, type-check friendly Chart block
                             Chart {
                                 ForEach(viewModel.chartDataPoints) { point in

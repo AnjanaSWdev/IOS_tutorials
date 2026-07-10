@@ -34,7 +34,7 @@ class GameSessionManager {
             longitude: longitude
         )
         
-        // Append to the array so old matches are NEVER deleted ---
+        // Append to the array so old matches are NEVER deleted
         self.sessions.append(newSession)
         
         // Persist the entire updated history array to the phone

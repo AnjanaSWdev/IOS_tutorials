@@ -40,7 +40,7 @@ class StatsVM {
         sessionManager.sessions.sorted { $0.timestamp > $1.timestamp }
     }
     
-    // --- THE FIX: Pre-compute chart data points explicitly ---
+    // Pre-compute chart data points explicitly
     var chartDataPoints: [ChartDataPoint] {
         let filtered = sessionManager.sessions
             .filter { $0.mode == selectedChartMode }

@@ -18,8 +18,10 @@ struct SettingsTab: View {
     var body: some View {
         List {
           
-            Section(header: Text("Notifications")) {
+            Section(header: Text("Notifications").foregroundColor(.gray)) {
                 Toggle("Daily Challenge Reminder", isOn: $isNotificationEnabled)
+                    .tint(.green)
+                
                     .onChange(of: isNotificationEnabled) { _, enabled in
                         if enabled { requestAndSchedule() }
                         else { cancelNotification() }
@@ -32,9 +34,11 @@ struct SettingsTab: View {
                         }
                 }
             }
+            .listRowBackground(Color(red: 0.16, green: 0.19, blue: 0.23)) // Premium card grey
+            .foregroundColor(.white)
             
             
-            Section(header: Text("Clear Stats")) {
+            Section(header: Text("Clear Stats").foregroundColor(.gray)) {
                 Button(role: .destructive) {
                     showResetConfirmation = true
                 } label: {
@@ -42,7 +46,13 @@ struct SettingsTab: View {
                         .foregroundColor(.red)
                 }
             }
+            .listRowBackground(Color(red: 0.16, green: 0.19, blue: 0.23)) // Premium card grey
         }
+        // UI Reskin Engine Modifiers
+        .scrollContentBackground(.hidden) // Strips away default iOS light grey canvas
+        .background(Color(red: 0.08, green: 0.11, blue: 0.15)) // Signature deep blue-black background
+        .preferredColorScheme(.dark) // Forces text, time wheels, and toggles to flip to crisp white mode
+        
         // Native iOS confirmation prompt for destructive actions
         .confirmationDialog(
             "Are you completely sure?",
@@ -65,7 +75,6 @@ struct SettingsTab: View {
         ScoreManager.shared.resetAllScores()
         
         // 2. Clear history sessions if you have a GameSessionManager setup
-        // GameSessionManager.shared.clearAllSessions()
         GameSessionManager.shared.clearAllSessions()
         
         // 3. Clear the daily challenge completion status so they can play it again
@@ -108,7 +117,6 @@ struct SettingsTab: View {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily_reminder"])
     }
 }
-
 
 #Preview {
     SettingsTab()

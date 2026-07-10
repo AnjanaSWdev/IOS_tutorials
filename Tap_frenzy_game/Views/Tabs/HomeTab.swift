@@ -6,14 +6,14 @@ import SwiftUI
 struct HomeTab: View {
     @StateObject private var scoreManager = ScoreManager.shared
     
-    // SIMPLE PERSISTENT APP STORAGE KEYS
+    // Simple Persistent App Storage Keys
     @AppStorage("daily_challenge_mode") private var dailyChallengeMode = "TapFrenzy"
     @AppStorage("challenge_completed_today") private var isChallengeCompleted = false
 
     var body: some View {
         NavigationStack {
             ZStack {
-                // Dynamic gradient background with soft blobs (Preserved Exactly)
+                // Dynamic gradient background with soft blobs
                 LinearGradient(colors: [Color(red: 0.05, green: 0.07, blue: 0.12), Color(red: 0.10, green: 0.14, blue: 0.22)], startPoint: .topLeading, endPoint: .bottomTrailing)
                     .ignoresSafeArea()
 
@@ -48,7 +48,7 @@ struct HomeTab: View {
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 16) {
                             
-                            // DYNAMIC DAILY CHALLENGE CARD
+                            // Dynamic daily challenge card
                             if isChallengeCompleted {
                                 // Static representation displaying success status
                                 dailyChallengeCardView()
@@ -59,7 +59,7 @@ struct HomeTab: View {
                                 }
                             }
                             
-                            //REGULAR GAME MODES
+                            //Regualar game modes
                             NavigationLink(destination: TapFrenzyView()) {
                                 gameCard(title: "TapFrenzy", icon: "hand.tap", gradient: [Color.blue, Color.cyan])
                             }
@@ -86,9 +86,9 @@ struct HomeTab: View {
         }
     }
 
-    // MARK: - Private UI Components
+    // Private UI Components
 
-    //  Beautiful Daily Challenge layout card matching your native suite styles
+   
     private func dailyChallengeCardView() -> some View {
         HStack(spacing: 14) {
             ZStack {

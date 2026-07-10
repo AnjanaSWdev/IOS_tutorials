@@ -37,9 +37,8 @@ class TapFrenzyVM {
                 checkHighScore()
                 
                 // Get current GPS Coordinates
-                
-                let currentLat = LocationService.shared.currentLocation?.coordinate.latitude ?? 6.9114
-                let currentLng = LocationService.shared.currentLocation?.coordinate.longitude ?? 79.8647
+                let currentLat = LocationService.shared.currentLocation?.coordinate.latitude ?? 0
+                let currentLng = LocationService.shared.currentLocation?.coordinate.longitude ?? 0
 
                 GameSessionManager.shared.recordSession(
                     mode: .tapFrenzy,

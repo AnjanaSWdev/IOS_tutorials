@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TabShell: View {
-    // Keeps track of the active tab selection
+    
     @State private var selectedTab: Tab = .home
     
     enum Tab: Int, CaseIterable {

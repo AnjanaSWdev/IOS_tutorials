@@ -71,7 +71,7 @@ struct MapTab: View {
             selectedModeDetails = nil
             if !sessionManager.sessions.isEmpty { position = .automatic }
         }
-        .onChange(of: selectedGroupID) { _ in
+        .onChange(of: selectedGroupID) { oldValue, newValue in
             selectedModeDetails = nil
         }
     }
@@ -261,6 +261,7 @@ enum MapDesign {
         }
     }
 }
+
 
 
 #Preview {

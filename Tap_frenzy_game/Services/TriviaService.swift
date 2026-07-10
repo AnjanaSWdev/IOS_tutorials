@@ -6,13 +6,16 @@ enum TriviaServiceError: Error, LocalizedError {
     case decodingFailed
 
     var errorDescription: String? {
+        
         switch self {
         case .badURL: return "Invalid URL."
         case .requestFailed: return "Network request failed."
         case .decodingFailed: return "Failed to decode server response."
         }
+        
     }
 }
+
 
 struct TriviaService {
     func fetchQuestions(amount: Int = 10) async throws -> [TriviaQuestion] {
