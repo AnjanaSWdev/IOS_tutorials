@@ -5,18 +5,36 @@
 //  Created by TEST on 2026-06-10.
 //
 
+
 import SwiftUI
 import Combine
 
 struct TapFrenzyView: View {
     
-    // 1. Added this to allow the Exit button to pop back to the menu
     @Environment(\.dismiss) private var dismiss
-    
     @State private var viewModel = TapFrenzyVM()
     
-    // Timer publisher remains a UI wrapper responsibility for view triggers
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    // Custom dynamic colors based on ViewModel gameplay states
+    private var buttonGradientColors: [Color] {
+        switch viewModel.buttonColorState {
+        case .blue:
+            return [Color.blue, Color.cyan]
+        case .green:
+            return [Color.green, Color.emerald]
+        case .grey:
+            return [Color.gray, Color(white: 0.35)]
+        }
+    }
+    
+    private var buttonShadowColor: Color {
+        switch viewModel.buttonColorState {
+        case .blue: return .blue
+        case .green: return .green
+        case .grey: return .gray
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -56,25 +74,40 @@ struct TapFrenzyView: View {
 
                 Spacer()
 
-                // Main Tap Button
-                Button(action: viewModel.handleTap) {
-                    ZStack {
-                        Circle()
-                            .fill(LinearGradient(colors: [Color.blue, Color.cyan], startPoint: .topLeading, endPoint: .bottomTrailing))
-                            .frame(width: 220, height: 220)
-                            .shadow(color: Color.blue.opacity(0.4), radius: 16, x: 0, y: 10)
+                // Interactive ZStack for Button & Floating Score Pops
+                ZStack {
+                    // Main Tap Button
+                    Button(action: viewModel.handleTap) {
+                        ZStack {
+                            Circle()
+                                .fill(LinearGradient(colors: buttonGradientColors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .frame(width: 220, height: 220)
+                                .shadow(color: buttonShadowColor.opacity(0.4), radius: 16, x: 0, y: 10)
 
-                        Circle()
-                            .strokeBorder(Color.white.opacity(0.2), lineWidth: 4)
-                            .frame(width: 240, height: 240)
+                            Circle()
+                                .strokeBorder(Color.white.opacity(0.2), lineWidth: 4)
+                                .frame(width: 240, height: 240)
 
-                        Text("TAP")
-                            .font(.system(size: 44, weight: .heavy, design: .rounded))
-                            .foregroundColor(.white)
-                            .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
+                            Text("TAP")
+                                .font(.system(size: 44, weight: .heavy, design: .rounded))
+                                .foregroundColor(.white)
+                                .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
+                        }
+                    }
+                    .buttonStyle(ScaledPressButtonStyle())
+                    .offset(viewModel.buttonOffset) // Applies high-speed offset transitions
+
+                    // Dynamic Floating Pop indicators overlay
+                    ForEach(viewModel.scorePops) { pop in
+                        Text(pop.text)
+                            .font(.system(size: 38, weight: .black, design: .rounded))
+                            .foregroundColor(pop.color)
+                            .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2)
+                            .offset(pop.offset)
+                            .opacity(pop.opacity)
+                            .allowsHitTesting(false) // Ensures click registration goes strictly to button
                     }
                 }
-                .buttonStyle(ScaledPressButtonStyle())
 
                 VStack(spacing: 8) {
                     if !viewModel.timerRunning {
@@ -88,7 +121,6 @@ struct TapFrenzyView: View {
                 Spacer()
             }
             .padding(.vertical)
-            
             
             if viewModel.showGameOver {
                 // Dimmed background to focus the popup
@@ -145,7 +177,6 @@ struct TapFrenzyView: View {
                             .background(Color.purple)
                             .cornerRadius(12)
                         }
-                        
                     }
                 }
                 .padding(28)
@@ -158,7 +189,6 @@ struct TapFrenzyView: View {
                 .transition(.scale.combined(with: .opacity))
             }
         }
-        // 3. Added smooth spring animation for when the popup appears
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: viewModel.showGameOver)
         .onReceive(timer) { _ in
             viewModel.updateTimer()
@@ -175,6 +205,10 @@ struct ScaledPressButtonStyle: ButtonStyle {
     }
 }
 
+// Custom Extension for Emerald Color Matching
+extension Color {
+    static let emerald = Color(red: 0.04, green: 0.73, blue: 0.45)
+}
 
 #Preview {
     TapFrenzyView()

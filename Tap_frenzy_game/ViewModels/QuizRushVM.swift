@@ -1,3 +1,9 @@
+//  QuizRushVM.swift
+//  Quiz_rush_game
+//
+//  Created by student2 on 2026-07-07.
+//
+
 import Foundation
 import Combine
 import SwiftUI
@@ -27,7 +33,6 @@ final class QuizRushVM: ObservableObject {
     @Published private(set) var selectedAnswer: String? = nil
     @Published private(set) var answerResult: AnswerResult? = nil
 
-    
     private let service: TriviaService
     private let questionCount: Int
 
@@ -79,7 +84,7 @@ final class QuizRushVM: ObservableObject {
             score += base + bonus
             answerResult = .correct
         } else {
-            // small penalty, advance anyway
+        
             streak = 0
             score = max(0, score - 25)
             answerResult = .wrong
@@ -111,15 +116,14 @@ final class QuizRushVM: ObservableObject {
             
             // Appends the finished game stats directly into our permanent history storage
             GameSessionManager.shared.recordSession(
-                        mode: .quizRush,
-                        score: score,
-                        latitude: currentLat,
-                        longitude: currentLng
-                    )
+                mode: .quizRush,
+                score: score,
+                latitude: currentLat,
+                longitude: currentLng
+            )
             
         } else {
             state = .loaded
         }
     }
 }
-

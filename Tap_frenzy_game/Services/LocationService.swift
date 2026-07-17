@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-@Observable // Makes it trackable in real-time by your view models
+@Observable // Makes it trackable in real-time by the view models
 class LocationService: NSObject, CLLocationManagerDelegate {
     static let shared = LocationService()
     

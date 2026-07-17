@@ -86,9 +86,8 @@ struct HomeTab: View {
         }
     }
 
+    
     // Private UI Components
-
-   
     private func dailyChallengeCardView() -> some View {
         HStack(spacing: 14) {
             ZStack {

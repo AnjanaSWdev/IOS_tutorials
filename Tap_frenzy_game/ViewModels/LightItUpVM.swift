@@ -30,7 +30,7 @@ class LightItUpVM {
     var isGameActive: Bool = false
     var showGameOverModal: Bool = false
     
-    // Persistent Highscore (Bound via modern AppStorage access)
+    // Persistent Highscore
     private let highScoreKey = "lightItUpHighScore"
     var highScore: Int {
         get { UserDefaults.standard.integer(forKey: highScoreKey) }

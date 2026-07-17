@@ -22,6 +22,9 @@ struct MapTab: View {
     @State private var selectedModeDetails: GameMode?
     @State private var position: MapCameraPosition = .automatic
     
+    // Flag to ensure the map only frames pins on the initial load
+    @State private var isFirstAppear = true
+    
     // Isolated location grouping property
     private var groupedLocations: [LocationGroup] {
         let grouped = Dictionary(grouping: sessionManager.sessions) { session in
@@ -54,7 +57,9 @@ struct MapTab: View {
                 }
             }
             .mapStyle(.standard)
+            .environment(\.colorScheme, .light)
             .ignoresSafeArea(edges: .top)
+                      
             
             // 2. Sub-viewed Detail Card Panel
             if let group = activeGroup {
@@ -69,7 +74,14 @@ struct MapTab: View {
         .onAppear {
             selectedGroupID = nil
             selectedModeDetails = nil
-            if !sessionManager.sessions.isEmpty { position = .automatic }
+            
+            // Only set position to automatic on the first initial load
+            if isFirstAppear {
+                if !sessionManager.sessions.isEmpty {
+                    position = .automatic
+                }
+                isFirstAppear = false
+            }
         }
         .onChange(of: selectedGroupID) { oldValue, newValue in
             selectedModeDetails = nil
@@ -261,8 +273,6 @@ enum MapDesign {
         }
     }
 }
-
-
 
 #Preview {
     MapTab()
